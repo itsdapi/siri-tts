@@ -2,7 +2,6 @@ import secret
 import random
 import hashlib
 import requests
-import json
 
 api = "https://fanyi-api.baidu.com/api/trans/vip/translate"
 secrets = secret.secrets
@@ -13,9 +12,14 @@ def whatis(_query: str, _source_la: str, _target_la: str):
     salt = str(random.randint(0, 10000))
     sign = signGen(appid, secrets, _query, salt)
     result = requests.get(f"{api}?q={_query}&from={_source_la}&to={_target_la}&appid={appid}&salt={salt}&sign={sign}")
-    dst = result.json()['trans_result'][0]['dst']
-    print(dst)
-    return dst
+    if 200 < result.status_code < 300:
+        print("baidu translator request success")
+        dst = result.json()['trans_result'][0]['dst']
+        print(dst)
+        return dst
+    else:
+        print("baidu translator fail!, returning source language.")
+        return _query
 
 
 def signGen(_appid, _secrets, _query, salt):

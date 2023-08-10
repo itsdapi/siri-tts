@@ -2,3 +2,4 @@ voice.wav
 voice_converted.mp3
 .idea
 venv
+secret.py

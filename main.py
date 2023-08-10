@@ -7,7 +7,7 @@ from flask import Flask, request
 from pydub import AudioSegment
 
 app = Flask(__name__)
-process = sys.argv[0]
+process = sys.argv[1]
 
 
 @app.route("/tts")
@@ -27,4 +27,6 @@ def convertToMp3():
 
 
 if __name__ == '__main__':
+    if process == '-p':
+        print("--Text process enabled--")
     app.run(host="0.0.0.0", port=5001)

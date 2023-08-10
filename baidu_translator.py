@@ -11,13 +11,17 @@ appid = secret.appid
 def whatis(_query: str, _source_la: str, _target_la: str):
     salt = str(random.randint(0, 10000))
     sign = signGen(appid, secrets, _query, salt)
-    result = requests.get(f"{api}?q={_query}&from={_source_la}&to={_target_la}&appid={appid}&salt={salt}&sign={sign}")
-    if 200 < result.status_code < 300:
-        print("baidu translator request success")
-        dst = result.json()['trans_result'][0]['dst']
+    try:
+        result = requests.get(f"{api}?q={_query}&from={_source_la}&to={_target_la}&appid={appid}&salt={salt}&sign={sign}")
+        if 'trans_result' in result.json():
+            print("baidu translator request success")
+            dst = result.json()['trans_result'][0]['dst']
+        else:
+            raise requests.exceptions.RequestException(result.json())
         print(dst)
         return dst
-    else:
+    except requests.exceptions.RequestException as error:
+        print(error)
         print("baidu translator fail!, returning source language.")
         return _query
 
